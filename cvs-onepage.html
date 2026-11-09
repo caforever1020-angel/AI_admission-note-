@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>心外一頁式就醫資訊整合（原型）</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f6;--sf:#fff;--tx:#14262e;--mu:#5b717b;--bd:#cfdbe1;--ac:#0b6e7f;--acs:#dcf0f3;--rd:#b3261e;--rds:#fbe4e2;--yl:#8a5a00;--yls:#fbf0d4;--gn:#1d6b3a;--gns:#dff2e5;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a20;--sf:#162830;--tx:#e6f0f3;--mu:#93a9b2;--bd:#2a4350;--ac:#5fc4d6;--acs:#173b45;--rd:#ff8a80;--rds:#3d1c1a;--yl:#f2c46b;--yls:#3b2f12;--gn:#7fd69b;--gns:#15351f}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif}
+header{background:var(--sf);border-bottom:1px solid var(--bd);padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+header h1{font-size:18px;margin:0}
+.pt{display:flex;flex-wrap:wrap;gap:4px 14px;color:var(--mu);font-size:13px}
+.pt b{color:var(--tx)}
+.demo{margin-left:auto;font-size:12px;background:var(--yls);color:var(--yl);padding:2px 8px;border-radius:4px}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:12px 16px}
+.lt{border-radius:6px;padding:8px 10px;border-left:6px solid;font-size:13px}
+.lt strong{display:block;font-size:15px}
+.g{background:var(--gns);border-color:var(--gn);color:var(--gn)}
+.y{background:var(--yls);border-color:var(--yl);color:var(--yl)}
+.r{background:var(--rds);border-color:var(--rd);color:var(--rd)}
+.n{background:var(--acs);border-color:var(--ac);color:var(--ac)}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:0 16px 24px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+section{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+h2{font-size:15px;margin:0 0 8px;color:var(--ac)}
+ul{margin:0;padding-left:18px}
+.src{font-size:12px;color:var(--mu)}
+.tl{border-left:2px solid var(--ac);margin-left:6px;padding-left:12px}
+.tl p{margin:0 0 8px}.tl time{font-weight:700;margin-right:6px}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td,th{padding:4px 8px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+.hi{color:var(--rd);font-weight:700}
+label{display:block;font-size:13px;color:var(--mu);margin:0}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 10px}
+input,select,textarea{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:6px 8px}
+:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+button{font:inherit;border:0;border-radius:6px;padding:7px 14px;background:var(--ac);color:var(--sf);cursor:pointer;font-weight:700}
+button.s{background:var(--acs);color:var(--ac)}
+.mod{display:none;margin-top:8px}.mod.on{display:grid}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{background:var(--yls);color:var(--yl);padding:1px 8px;border-radius:4px;font-size:12px;font-weight:700}
+textarea{min-height:230px;line-height:1.7}
+.cd{display:flex;gap:8px;align-items:end;flex-wrap:wrap}.cd div{width:90px}
+</style>
+</head>
+<body>
+<header>
+<h1>心外一頁式就醫摘要</h1>
+<div class="pt"><span><b>陳○明</b> 68 歲男</span><span>病歷號 0000000</span><span>床 CVS-12</span><span>入院 2026/11/09 14:20（心內科轉入）</span><span>主治 王醫師</span></div>
+<span class="demo">範例假資料，非真實病人</span>
+</header>
+
+<div class="strip" id="strip">
+<div class="lt r"><strong>過敏：顯影劑</strong>皮疹（2019）</div>
+<div class="lt y" id="apLt"><strong id="apTx"></strong>抗血小板停藥</div>
+<div class="lt g"><strong>STS 2.8%</strong>低風險</div>
+<div class="lt y"><strong>LVEF 45%</strong>輕度下降</div>
+<div class="lt g"><strong>備血已完成</strong>Cross match 2U</div>
+<div class="lt r"><strong>同意書未簽</strong>手術、麻醉</div>
+<div class="lt n"><strong>Full code</strong>無隔離需求</div>
+</div>
+
+<main>
+<div>
+<section><h2>入院原因（3 分鐘版）</h2>
+<p><b>3VD，擬接受 CABG。</b>68 歲男性，因勞力性胸悶一週加重，心導管發現 LM 70%、LAD 90%、RCA 100%，經 Heart Team 建議手術，轉入心外術前準備。</p>
+<ul><li>冠狀動脈：LM 70%｜LAD 90%｜RCA 100%</li><li>症狀分級：CCS III，NYHA II</li><li>預計術式：CABG ×3，日期待排</li><li>病史：高血壓、第二型糖尿病、CKD 3、吸菸 30 年</li></ul>
+<p class="src">來源：病歷、心導管報告（2026/11/07）</p></section>
+
+<section><h2>時間軸</h2><div class="tl">
+<p><time>11/02</time>勞力性胸悶，休息可緩解</p>
+<p><time>11/06</time>休息時發作，至心內科急診，Troponin 上升</p>
+<p><time>11/07</time>心導管：3VD，未置放支架</p>
+<p><time>11/09</time>Heart Team 討論，轉心外術前準備</p></div></section>
+
+<section><h2>抗血小板停藥倒數</h2>
+<div class="cd"><div><label>藥物</label><select id="drug"><option>Clopidogrel</option><option>Ticagrelor</option><option>Prasugrel</option></select></div>
+<div><label>已停（天）</label><input id="stopped" type="number" min="0" value="3"></div>
+<div><label>需停（天）</label><input id="need" type="number" min="0" value="5"></div></div>
+<p class="src">需停天數請依單位規範設定。Aspirin 持續使用。</p></section>
+
+<section><h2>入院時客觀資料</h2>
+<ul><li>BP 148/86（右）、142/84（左），HR 78，RR 18，SpO₂ 97%，BT 36.7</li><li>JVP 正常，心音 S1 S2 無雜音，雙肺清，無水腫</li><li>ECG：竇性心律，V4–V6 ST 下降</li><li>TTE：LVEF 45%，前壁運動低下，無明顯瓣膜病變</li></ul>
+<div class="wrap"><table><tr><th>檢驗</th><th>入院值</th><th>趨勢</th></tr>
+<tr><td>Troponin I</td><td class="hi">0.08 ↑</td><td>0.15 → 0.08</td></tr>
+<tr><td>Cr / eGFR</td><td class="hi">1.4 / 52 ↑</td><td>1.3 → 1.4</td></tr>
+<tr><td>Hb</td><td>12.1</td><td>12.4 → 12.1</td></tr>
+<tr><td>INR</td><td>1.0</td><td>—</td></tr>
+<tr><td>HbA1c</td><td class="hi">7.9% ↑</td><td>—</td></tr></table></div></section>
+</div>
+
+<div>
+<section><h2>LQQOPERA 輸入（當面詢問）</h2>
+<div class="row" style="margin-bottom:8px"><div style="flex:1;min-width:160px"><label>主訴模組</label>
+<select id="cc"><option value="chest">胸痛</option><option value="dysp">呼吸喘</option></select></div></div>
+<div class="f">
+<div><label>L 部位</label><input id="L" value="胸骨後"></div>
+<div><label>Q 性質</label><input id="Q1" value="壓迫感"></div>
+<div><label>Q 嚴重度（NRS 0–10）</label><input id="Q2" type="number" min="0" max="10" value="6"></div>
+<div><label>O 發作</label><input id="O" value="約一週前，爬兩層樓時"></div>
+<div><label>P 加重／緩解</label><input id="P" value="勞力加重，休息 5 分鐘緩解"></div>
+<div><label>E 發作模式</label><input id="E" value="間歇，近三天變頻繁"></div>
+<div><label>R 放射</label><input id="R" value="左肩與下巴"></div>
+<div><label>A 伴隨症狀</label><input id="A" value="冒汗、輕度噁心"></div>
+<div><label>重要陰性</label><input id="N" value="無暈厥、無撕裂感、無發燒"></div>
+<div><label>自行處理／就醫前用藥</label><input id="S" value="含 NTG 一次，緩解"></div>
+<div><label>功能狀態</label><input id="Fn" value="可走兩層樓，生活自理"></div>
+</div>
+<div class="f mod on" id="m-chest"><div><label>含 NTG 是否緩解</label><select id="ntg"><option>有緩解</option><option>無緩解</option></select></div><div><label>CCS 分級</label><select id="ccs"><option>I</option><option>II</option><option selected>III</option><option>IV</option></select></div></div>
+<div class="f mod" id="m-dysp"><div><label>NYHA 分級</label><select id="nyha"><option>I</option><option selected>II</option><option>III</option><option>IV</option></select></div><div><label>端坐呼吸／PND／水腫</label><input id="orth" value="無端坐呼吸，無下肢水腫"></div></div>
+</section>
+
+<section><h2>PI 草稿 <span class="badge">草稿，須專師核對</span></h2>
+<textarea id="pi" aria-label="PI 草稿"></textarea>
+<div class="row" style="margin-top:8px"><button id="gen">重新生成</button><button class="s" id="cp">複製</button><span class="src" id="msg">編輯後的文字不會被覆蓋，直到按下重新生成。</span></div>
+<p class="src">請核對 EF、狹窄百分比、藥物停用時間與日期後再定稿。僅限院內系統使用。</p></section>
+</div>
+</main>
+
+<script>
+var $=function(i){return document.getElementById(i)};
+function v(i){var x=$(i).value.trim();return x||"[ ]"}
+function ap(){
+ var s=+$("stopped").value,n=+$("need").value,d=$("drug").value,el=$("apLt");
+ var ok=s>=n;el.className="lt "+(ok?"g":(n-s<=2?"y":"r"));
+ $("apTx").textContent=d+" 已停 "+s+"／"+n+" 天"}
+function gen(){
+ var c=$("cc").value,sym=c==="chest"?"胸痛":"呼吸喘";
+ var grade=c==="chest"?"CCS "+$("ccs").value+" 級，含 NTG "+$("ntg").value:"NYHA "+$("nyha").value+" 級，"+v("orth");
+ var t="68 歲男性，有高血壓、第二型糖尿病、CKD 3 與吸菸史，長期使用 Aspirin 與 "+$("drug").value+"。此次因"+sym+"於 2026/11/06 至心內科急診就醫。\n\n"
+ +"症狀描述：病人自"+v("O")+"起出現"+v("L")+"「"+v("Q1")+"」"+(c==="chest"?"胸痛":"不適")+"，強度 "+v("Q2")+"/10，"+v("E")+"，"+grade+"。"+v("P")+"，放射至"+v("R")+"。伴隨"+v("A")+"；"+v("N")+"。就醫前自行處理：" +v("S")+"。功能狀態：" +v("Fn")+"。\n\n"
+ +"就醫經過：急診 Troponin I 0.15 ng/mL，ECG 見 V4–V6 ST 下降，心臟超音波示 LVEF 45%。11/07 心導管顯示 LM 70%、LAD 90%、RCA 100%，未置放支架。經 Heart Team 評估建議 CABG，故轉入心外。\n\n"
+ +"入院時客觀發現：BP 148/86、HR 78、SpO₂ 97%；JVP 正常、無雜音、雙肺清、無水腫；Cr 1.4、Hb 12.1、INR 1.0，STS 2.8%。\n\n"
+ +"入院診斷：三條冠狀動脈疾病（3VD）。計畫：術前準備，"+$("drug").value+" 已停 "+$("stopped").value+" 天（需 "+$("need").value+" 天），備血已完成，待簽署手術與麻醉同意書，排定 CABG。";
+ $("pi").value=t}
+$("cc").onchange=function(){$("m-chest").className="f mod"+(this.value==="chest"?" on":"");$("m-dysp").className="f mod"+(this.value==="dysp"?" on":"");gen()};
+["stopped","need","drug"].forEach(function(i){$(i).oninput=function(){ap();}});
+$("gen").onclick=function(){gen();$("msg").textContent="已依目前輸入重新生成。"};
+$("cp").onclick=function(){try{navigator.clipboard.writeText($("pi").value).then(function(){$("msg").textContent="已複製。"},function(){$("pi").select();$("msg").textContent="請按 Ctrl+C 複製。"})}catch(e){$("pi").select();$("msg").textContent="請按 Ctrl+C 複製。"}};
+ap();gen();
+</script>
+</body>
+</html>
